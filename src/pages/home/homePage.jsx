@@ -87,7 +87,8 @@ const useStyles = makeStyles((theme) => ({
 const games = [{
   id: "weapons",
   name: "Armas",
-  img: "https://res.cloudinary.com/luneswallet/image/upload/v1593284470/ei.garotos.games/weapon.png"
+  img: "https://res.cloudinary.com/luneswallet/image/upload/v1593284470/ei.garotos.games/weapon.png",
+  visible: false
 }, {
   id: "backpack",
   name: "Mochilas",
@@ -207,16 +208,18 @@ function HomePage() {
       {games.length ? (
         <Grid container justify="center">
           {games.map((item, i) => (
-            <Grid key={i} item xs={12} sm={6} md={4} lg={3} className={classes.grid} onClick={() => details(item)}>
-              <Card className={classes.root}>
-                <CardMedia
-                  className={classes.media}
-                  image={item.img}
-                  title={item.name}
-                />
-                <CardContent classes={{root: classes.name}}>{item.name}</CardContent>
-              </Card>
-            </Grid>
+            item.visible === false ? null : (
+              <Grid key={i} item xs={12} sm={6} md={4} lg={3} className={classes.grid} onClick={() => details(item)}>
+                <Card className={classes.root}>
+                  <CardMedia
+                    className={classes.media}
+                    image={item.img}
+                    title={item.name}
+                  />
+                  <CardContent classes={{root: classes.name}}>{item.name}</CardContent>
+                </Card>
+              </Grid>
+            )
           ))}
         </Grid>
       ) : null}
