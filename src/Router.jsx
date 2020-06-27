@@ -10,7 +10,7 @@ class BrowserRouter extends React.Component {
 
   render() {
     return (
-      <Router history={this.props.history}>
+      <Router basename={process.env.PUBLIC_URL} history={this.props.history}>
         <Switch>
           <Route component={Header}/>
         </Switch>
