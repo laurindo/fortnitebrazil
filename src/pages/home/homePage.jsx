@@ -1,4 +1,5 @@
 import AppBar from "@material-ui/core/AppBar";
+import CardHeader from "@material-ui/core/CardHeader";
 import ExpansionPanel from "@material-ui/core/ExpansionPanel";
 import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
 import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
@@ -22,7 +23,7 @@ import {weapons} from "../../weapons";
 import groupBy from "lodash/groupBy";
 import React, {useEffect, useState} from "react";
 
-//const fortniteAPI = new FortniteAPI("6ccd8b94-7aa51472-f17de77c-d4155578");
+const fortniteAPI = new FortniteAPI("6ccd8b94-7aa51472-f17de77c-d4155578");
 
 const useStyles = makeStyles((theme) => ({
   app: {
@@ -88,31 +89,34 @@ const useStyles = makeStyles((theme) => ({
     width: "280px"
   },
   expansion: {
-    width: '100%'
+    width: "100%"
+  },
+  newsRoot: {
+    fontWeight: 'bold'
   }
 }));
 
 const rarities = {
   rare: {
-    name: 'Raro'
+    name: "Raro"
   },
   common: {
-    name: 'Comum'
+    name: "Comum"
   },
   uncommon: {
-    name: 'Incomum'
+    name: "Incomum"
   },
   legendary: {
-    name: 'Legendário'
+    name: "Legendário"
   },
   epic: {
-    name: 'Épico'
+    name: "Épico"
   },
   mythic: {
     name: "Mítico"
   },
   transcendent: {
-    name: 'Transcendente'
+    name: "Transcendente"
   }
 };
 
@@ -178,11 +182,16 @@ const getWeapons = async () => {
   return weapons;
 };
 
+const getNews = async () => {
+  return await fortniteAPI.getNews("br", {lang: "pt-BR"});
+};
+
 function HomePage(props) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState([]);
   const [nameItems, setNameItems] = useState([]);
+  const [news, setNews] = useState([]);
   const [currentItems, setCurrentItem] = useState([]);
   const [weaponGroups, setWeaponGroup] = useState({});
 
@@ -190,11 +199,13 @@ function HomePage(props) {
     getItems().then(response => {
       getWeapons().then(w => {
         setWeaponGroup(groupBy(w, n => n.rarity));
-        debugger;
         setItems(response.items);
         setNameItems(Object.keys(response.items).map(i => ({name: i})));
       });
-
+    });
+    getNews().then(response => {
+      debugger;
+      setNews(response.news);
     });
   }, []);
 
@@ -246,9 +257,10 @@ function HomePage(props) {
   return (
     <div className={classes.app}>
 
-      <div style={{width: '100%', margin: '20px 0', padding: '0 20px', textAlign: 'center'}}>
+      <div style={{width: "100%", margin: "20px 0", padding: "0 20px", textAlign: "center"}}>
         <Typography>
-          Fortnite é um jogo eletrônico multijogador online revelado originalmente em 2011, desenvolvido pela Epic Games e lançado como diferentes modos de jogo que compartilham a mesma jogabilidade e motor gráfico de jogo.
+          Fortnite é um jogo eletrônico multijogador online revelado originalmente em 2011, desenvolvido pela Epic Games e lançado como diferentes
+          modos de jogo que compartilham a mesma jogabilidade e motor gráfico de jogo.
         </Typography>
       </div>
 
@@ -295,6 +307,28 @@ function HomePage(props) {
           ))}
         </Grid>
       ) : null}
+
+      <div>
+        <h1>Notícias - Battle Royale</h1>
+      </div>
+
+      <Grid container spacing={2}>
+        {news.length ? news.map((n, i) => (
+          <Grid key={i} item xs={12} sm={6} md={4} lg={3}>
+            <Card>
+              <CardMedia
+                className={classes.media}
+                image={n.image}
+                title={n.title}
+              />
+              <CardContent classes={{root: classes.name}}>
+                <Typography component="h5" classes={{root: classes.newsRoot}}>{n.title}</Typography>
+                <Typography component="p">{n.body}</Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+        )) : null}
+      </Grid>
     </div>
   );
 }
