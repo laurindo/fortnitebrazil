@@ -1,5 +1,8 @@
 import AppBar from "@material-ui/core/AppBar";
-import Button from "@material-ui/core/Button";
+import ExpansionPanel from "@material-ui/core/ExpansionPanel";
+import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
+import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
+import withWidth from "@material-ui/core/withWidth";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
@@ -12,12 +15,14 @@ import IconButton from "@material-ui/core/IconButton";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import FortniteAPI from "fortnite-api-io";
 import {items} from "../../items";
 import {weapons} from "../../weapons";
+import groupBy from "lodash/groupBy";
 import React, {useEffect, useState} from "react";
 
-const fortniteAPI = new FortniteAPI("6ccd8b94-7aa51472-f17de77c-d4155578");
+//const fortniteAPI = new FortniteAPI("6ccd8b94-7aa51472-f17de77c-d4155578");
 
 const useStyles = makeStyles((theme) => ({
   app: {
@@ -81,14 +86,41 @@ const useStyles = makeStyles((theme) => ({
   },
   detailImage: {
     width: "280px"
+  },
+  expansion: {
+    width: '100%'
   }
 }));
+
+const rarities = {
+  rare: {
+    name: 'Raro'
+  },
+  common: {
+    name: 'Comum'
+  },
+  uncommon: {
+    name: 'Incomum'
+  },
+  legendary: {
+    name: 'Legendário'
+  },
+  epic: {
+    name: 'Épico'
+  },
+  mythic: {
+    name: "Mítico"
+  },
+  transcendent: {
+    name: 'Transcendente'
+  }
+};
 
 const games = [{
   id: "weapons",
   name: "Armas",
   img: "https://res.cloudinary.com/luneswallet/image/upload/v1593284470/ei.garotos.games/weapon.png",
-  visible: false
+  visible: true
 }, {
   id: "backpack",
   name: "Mochilas",
@@ -146,36 +178,85 @@ const getWeapons = async () => {
   return weapons;
 };
 
-function HomePage() {
+function HomePage(props) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState([]);
   const [nameItems, setNameItems] = useState([]);
   const [currentItems, setCurrentItem] = useState([]);
-  const [weaponItems, setWeapons] = useState([]);
+  const [weaponGroups, setWeaponGroup] = useState({});
 
   useEffect(() => {
     getItems().then(response => {
-      setItems(response.items);
-      setNameItems(Object.keys(response.items).map(i => ({name: i})));
-    });
-    getWeapons().then(response => {
-      debugger;
-      setWeapons(response);
+      getWeapons().then(w => {
+        setWeaponGroup(groupBy(w, n => n.rarity));
+        debugger;
+        setItems(response.items);
+        setNameItems(Object.keys(response.items).map(i => ({name: i})));
+      });
+
     });
   }, []);
 
   const details = item => {
+    if (item.id === "weapons") {
+      setCurrentItem(weaponGroups);
+    } else {
+      setCurrentItem(items[item.id]);
+    }
     setCurrentItem(items[item.id]);
     setOpen(true);
   };
 
+  const displayDetailCard = item => {
+    return (
+      <Grid item xs={12} md={4} lg={4}>
+        <Card key={item.id} className={classes.detailCard}>
+          <h4 className={classes.detailTitle}>{item.name}</h4>
+          <h6 className={classes.detailTitle}>{item.rarity}</h6>
+          <h6 className={classes.detailTitle}>{item.description}</h6>
+          <img src={item.images.icon} className={classes.detailImage}/>
+        </Card>
+      </Grid>
+    );
+  };
+
+  const displayWeapons = () => {
+    const groups = Object.keys(weaponGroups);
+    return groups.map((key, i) => {
+      return (
+        <ExpansionPanel key={i} classes={{root: classes.expansion}}>
+          <ExpansionPanelSummary
+            expandIcon={<ExpandMoreIcon/>}
+            aria-controls="panel1a-content"
+            id="panel1a-header"
+          >
+            <Typography className={classes.heading}>{rarities[key].name}</Typography>
+          </ExpansionPanelSummary>
+          <ExpansionPanelDetails>
+            <Grid container spacing={2}>
+              {weaponGroups[key].map(weapon => displayDetailCard(weapon))}
+            </Grid>
+          </ExpansionPanelDetails>
+        </ExpansionPanel>
+      );
+    });
+  };
+
   return (
     <div className={classes.app}>
+
+      <div style={{width: '100%', margin: '20px 0', padding: '0 20px', textAlign: 'center'}}>
+        <Typography>
+          Fortnite é um jogo eletrônico multijogador online revelado originalmente em 2011, desenvolvido pela Epic Games e lançado como diferentes modos de jogo que compartilham a mesma jogabilidade e motor gráfico de jogo.
+        </Typography>
+      </div>
+
       {open && (
         <Dialog
           maxWidth="xl"
           fullWidth
+          fullScreen={props.width === "xs"}
           open={open}
           onClose={() => setOpen(false)}
           PaperProps={{classes: {root: classes.paper}}}
@@ -190,16 +271,7 @@ function HomePage() {
           </AppBar>
           <DialogContent>
             <Grid container spacing={2}>
-              {currentItems.map((item, i) => (
-                <Grid item xs={12} md={4} lg={4}>
-                  <Card key={i} className={classes.detailCard}>
-                    <h4 className={classes.detailTitle}>{item.name}</h4>
-                    <h6 className={classes.detailTitle}>{item.rarity}</h6>
-                    <h6 className={classes.detailTitle}>{item.description}</h6>
-                    <img src={item.images.icon} className={classes.detailImage}/>
-                  </Card>
-                </Grid>
-              ))}
+              {currentItems ? currentItems.map(item => displayDetailCard(item)) : displayWeapons()}
             </Grid>
           </DialogContent>
         </Dialog>
@@ -227,4 +299,4 @@ function HomePage() {
   );
 }
 
-export default HomePage;
+export default withWidth()(HomePage);

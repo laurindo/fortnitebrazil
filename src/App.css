@@ -2,3 +2,9 @@
   padding: 25px 25px 0;
   text-align: center;
 }
+
+@media only screen and (max-width: 425px) {
+  .headerImg {
+    width: 100%;
+  }
+}
