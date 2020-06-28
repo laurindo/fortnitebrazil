@@ -94,7 +94,7 @@ const useStyles = makeStyles((theme) => ({
     width: "100%"
   },
   newsRoot: {
-    fontWeight: 'bold'
+    fontWeight: "bold"
   }
 }));
 
@@ -256,6 +256,14 @@ function HomePage(props) {
     });
   };
 
+  const getADS = () => {
+    try {
+      window._mNHandle.queue.push(function() {
+        window._mNDetails.loadTag("707767312", "970x90", "707767312");
+      });
+    } catch (error) {}
+  };
+
   return (
     <div className={classes.app}>
 
@@ -264,6 +272,10 @@ function HomePage(props) {
           Fortnite é um jogo eletrônico multijogador online revelado originalmente em 2011, desenvolvido pela Epic Games e lançado como diferentes
           modos de jogo que compartilham a mesma jogabilidade e motor gráfico de jogo.
         </Typography>
+      </div>
+
+      <div id="707767312">
+        {getADS()}
       </div>
 
       {open && (
