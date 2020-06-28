@@ -18,16 +18,18 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import FortniteAPI from "fortnite-api-io";
+import Footer from "../../components/footer";
 import {items} from "../../items";
 import {weapons} from "../../weapons";
 import groupBy from "lodash/groupBy";
 import React, {useEffect, useState} from "react";
 
-const fortniteAPI = new FortniteAPI("6ccd8b94-7aa51472-f17de77c-d4155578");
+const fortniteAPI = new FortniteAPI(process.env.REACT_APP_API);
 
 const useStyles = makeStyles((theme) => ({
   app: {
     padding: 50,
+    marginBottom: 100,
     [theme.breakpoints.down("md")]: {
       padding: 0
     }
@@ -329,6 +331,8 @@ function HomePage(props) {
           </Grid>
         )) : null}
       </Grid>
+
+      <Footer/>
     </div>
   );
 }

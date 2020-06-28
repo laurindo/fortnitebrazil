@@ -5,6 +5,9 @@ import {Route, Router, Switch} from "react-router-dom";
 import Header from "./components/header";
 // pages
 import HomePage from "./pages/home/homePage";
+import TournamentsPage from "./pages/tournaments/tournamentsPage";
+import MapsPage from "./pages/maps/mapsPage";
+import POIPage from "./pages/maps/poiPage";
 
 class BrowserRouter extends React.Component {
 
@@ -16,7 +19,9 @@ class BrowserRouter extends React.Component {
         </Switch>
         <Switch>
           <Route exact path="/" component={HomePage}/>
-          {/*<Route exact path="/details/:id" component={GamePage}/>*/}
+          <Route exact path="/torneios" component={TournamentsPage}/>
+          <Route exact path="/mapas" component={MapsPage}/>
+          <Route exact path="/pontos-de-interesse" component={POIPage}/>
         </Switch>
       </Router>
     );
