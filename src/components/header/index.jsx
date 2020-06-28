@@ -10,6 +10,7 @@ function Header() {
       />
       <ul className="headerMenu">
         <li><a href="/">Home</a></li>
+        <li><a href="/#/historia">História</a></li>
         <li><a href="/#/torneios">Torneios</a></li>
         <li><a href="/#/mapas">Mapas</a></li>
         <li><a href="/#/pontos-de-interesse">Pontos de Interesse</a></li>
