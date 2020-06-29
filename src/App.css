@@ -23,6 +23,17 @@ ul.headerMenu li a:hover {
   color: #fff;
 }
 
+ul.headerMenu li.active {
+  padding: 5px 20px;
+  background-color: #c272d9;
+  border-radius: 50px;
+  color: #fff;
+}
+
+ul.headerMenu li.active a {
+  color: #fff;
+}
+
 .footer {
   position: fixed;
   left: 0;

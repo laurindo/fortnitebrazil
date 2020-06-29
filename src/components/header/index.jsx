@@ -1,6 +1,7 @@
 import React from "react";
 import '../../App.css';
-function Header() {
+function Header(props) {
+  const path = props.location.pathname;
   return (
     <header className="header">
       <img
@@ -9,11 +10,11 @@ function Header() {
         className="headerImg"
       />
       <ul className="headerMenu">
-        <li><a href="/">Home</a></li>
-        <li><a href="/#/historia">História</a></li>
-        <li><a href="/#/torneios">Torneios</a></li>
-        <li><a href="/#/mapas">Mapas</a></li>
-        <li><a href="/#/pontos-de-interesse">Pontos de Interesse</a></li>
+        <li className={path === "/" ? "active" : ""}><a href="/">Home</a></li>
+        <li className={path === "/historia" ? "active" : ""}><a href="/#/historia">História</a></li>
+        <li className={path === "/torneios" ? "active" : ""}><a href="/#/torneios">Torneios</a></li>
+        <li className={path === "/mapas" ? "active" : ""}><a href="/#/mapas">Mapas</a></li>
+        <li className={path === "/pontos-de-interesse" ? "active" : ""}><a href="/#/pontos-de-interesse">Pontos de Interesse</a></li>
       </ul>
     </header>
   );
