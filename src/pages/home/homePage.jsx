@@ -180,8 +180,8 @@ const games = [{
 const getItems = async () => items;
 
 const getWeapons = async () => {
-  //const r = await fortniteAPI.listLoot({lang: 'pt-BR'});
-  return weapons;
+  const r = await fortniteAPI.listLoot({lang: 'pt-BR'});
+  return r.weapons;
 };
 
 const getNews = async () => {
